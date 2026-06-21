@@ -197,6 +197,80 @@ export function setRematchVisible(root: HTMLElement, visible: boolean): void {
   }
 }
 
+export function renderHeldPiece(root: HTMLElement): void {
+  const area = document.createElement('div');
+  area.className = 'held-piece-area';
+
+  const piece = document.createElement('div');
+  piece.className = 'held-piece idle';
+  area.appendChild(piece);
+
+  root.appendChild(area);
+}
+
+export function setupHeldPieceTracking(root: HTMLElement): void {
+  const board = root.querySelector<HTMLElement>('.board');
+  const area = root.querySelector<HTMLElement>('.held-piece-area');
+  const piece = root.querySelector<HTMLElement>('.held-piece');
+
+  if (!board || !area || !piece) {
+    return;
+  }
+
+  board.addEventListener('pointermove', (event) => {
+    if (piece.classList.contains('inactive')) {
+      return;
+    }
+
+    const columnEl = (event.target as HTMLElement).closest<HTMLElement>('.column');
+
+    if (!columnEl) {
+      return;
+    }
+
+    const areaRect = area.getBoundingClientRect();
+    const columnRect = columnEl.getBoundingClientRect();
+    const centerX = columnRect.left + columnRect.width / 2 - areaRect.left;
+
+    piece.classList.remove('idle');
+    piece.style.left = `${centerX}px`;
+  });
+
+  board.addEventListener('pointerleave', () => {
+    if (piece.classList.contains('inactive')) {
+      return;
+    }
+
+    piece.classList.add('idle');
+    piece.style.removeProperty('left');
+  });
+}
+
+export function setHeldPieceColor(root: HTMLElement, color: string): void {
+  const piece = root.querySelector<HTMLElement>('.held-piece');
+
+  if (piece) {
+    piece.style.backgroundColor = color;
+  }
+}
+
+export function setHeldPieceActive(root: HTMLElement, active: boolean): void {
+  const piece = root.querySelector<HTMLElement>('.held-piece');
+
+  if (!piece) {
+    return;
+  }
+
+  piece.classList.toggle('inactive', !active);
+
+  if (active) {
+    piece.classList.add('idle');
+  } else {
+    piece.classList.remove('idle');
+    piece.style.removeProperty('left');
+  }
+}
+
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
   root.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;

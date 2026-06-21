@@ -14,10 +14,14 @@ import {
   renderControls,
   renderEmptyGrid,
   renderEndScreen,
+  renderHeldPiece,
   renderScore,
   renderTitle,
   setColorSelectorLocked,
+  setHeldPieceActive,
+  setHeldPieceColor,
   setRematchVisible,
+  setupHeldPieceTracking,
 } from './ui';
 import { checkWin } from './win';
 
@@ -57,12 +61,28 @@ function playerName(player: Player): string {
   return player === 'red' ? pair.player1.name : pair.player2.name;
 }
 
+function heldPieceColorFor(player: Player): string {
+  const pair = currentColorPair();
+  return player === 'red' ? pair.player1.color : pair.player2.color;
+}
+
+const syncHeldPiece = (): void => {
+  if (state.winner) {
+    setHeldPieceActive(root, false);
+    return;
+  }
+
+  setHeldPieceActive(root, true);
+  setHeldPieceColor(root, heldPieceColorFor(state.currentPlayer));
+};
+
 renderTitle(root);
 
 renderColorSelector(root, COLOR_PAIRS, selectedColorIndex, (index) => {
   selectedColorIndex = index;
   applyColorPair(root, currentColorPair());
   renderScore(root, score, currentColorPair());
+  syncHeldPiece();
 });
 
 const rematch = (): void => {
@@ -70,6 +90,7 @@ const rematch = (): void => {
   setRematchVisible(root, false);
   clearEndScreen(root);
   renderBoard(root, state.board);
+  syncHeldPiece();
 };
 
 renderControls(
@@ -83,14 +104,18 @@ renderControls(
     clearEndScreen(root);
     renderBoard(root, state.board);
     renderScore(root, score, currentColorPair());
+    syncHeldPiece();
   },
   rematch,
 );
 
 applyColorPair(root, currentColorPair());
+renderHeldPiece(root);
 renderEmptyGrid(root);
 renderBoard(root, state.board);
 renderScore(root, score, currentColorPair());
+setupHeldPieceTracking(root);
+syncHeldPiece();
 
 onColumnClick(root, (column) => {
   if (state.winner) {
@@ -118,6 +143,7 @@ onColumnClick(root, (column) => {
     renderScore(root, score, currentColorPair());
     renderEndScreen(root, `${playerName(winner)} wins`);
     setRematchVisible(root, true);
+    syncHeldPiece();
     return;
   }
 
@@ -125,8 +151,10 @@ onColumnClick(root, (column) => {
     state.winner = 'draw';
     renderEndScreen(root, 'Draw');
     setRematchVisible(root, true);
+    syncHeldPiece();
     return;
   }
 
   state.currentPlayer = otherPlayer(state.currentPlayer);
+  syncHeldPiece();
 });
