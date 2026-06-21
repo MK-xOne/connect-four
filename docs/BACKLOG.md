@@ -12,8 +12,8 @@ reorders, adds, or starts an item that isn't marked DOING.
 6. [DONE] Reset button — starts a fresh game from any state. This item finishes v1.
 7. [DONE] Game title — a "Connect Four" heading above the board.
 8. [DONE] Color selection — before a game starts, the player picks from a few preset color pairs. The choice is locked once the first token is placed and stays locked until reset/New game.
-9. [DOING] Visual style tokens — define a modern, clean palette, type scale, spacing, and surface treatment; document them as named tokens in docs/STYLE.md and as CSS variables. No UI changes this item.
-10. [TODO] Apply visual style — restyle the title, New game button, color selector, and board frame to the documented tokens. UI chrome only; the game token color pairs are unchanged.
+9. [DONE] Visual style tokens — define a modern, clean palette, type scale, spacing, and surface treatment; document them as named tokens in docs/STYLE.md and as CSS variables. No UI changes this item.
+10. [DOING] Apply visual style — restyle the title, New game button, color selector, and board frame to the documented tokens. UI chrome only; the game token color pairs are unchanged.
 11. [TODO] Selector swatches — each preset color option shows two discs in that pair's colors. Presentation only; selector behavior/lock unchanged.
 12. [TODO] Rematch — on game end, a Rematch control starts a fresh board with the same colors, without reopening color selection. New game still does the full reset.
 13. [TODO] Score tally — an in-memory win counter per player, shown near the board. A win increments it; Rematch carries it over; New game zeroes it. The counter logic is pure and gets Vitest tests. No persistence — the tally clears on page reload.
