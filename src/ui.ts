@@ -40,7 +40,18 @@ export function renderColorSelector(
       }
     });
 
+    const swatches = document.createElement('span');
+    swatches.className = 'color-swatches';
+
+    [pair.player1.color, pair.player2.color].forEach((color) => {
+      const swatch = document.createElement('span');
+      swatch.className = 'color-swatch';
+      swatch.style.backgroundColor = color;
+      swatches.appendChild(swatch);
+    });
+
     label.appendChild(input);
+    label.appendChild(swatches);
     label.append(`${pair.player1.name} / ${pair.player2.name}`);
     fieldset.appendChild(label);
   });
