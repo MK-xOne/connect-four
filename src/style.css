@@ -16,6 +16,7 @@ body {
 .board {
   display: flex;
   gap: 0.5rem;
+  width: fit-content;
   background: #2541b2;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -36,11 +37,11 @@ body {
 }
 
 .cell.red {
-  background: #e53935;
+  background: var(--player1-color, #e53935);
 }
 
 .cell.yellow {
-  background: #fdd835;
+  background: var(--player2-color, #fdd835);
 }
 
 .end-screen {
@@ -55,5 +56,27 @@ body {
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
+  cursor: pointer;
+}
+
+.color-selector {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #2541b2;
+  border-radius: 0.5rem;
+  color: #ffffff;
+}
+
+.color-selector:disabled {
+  opacity: 0.5;
+}
+
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   cursor: pointer;
 }

@@ -1,6 +1,66 @@
 import { COLUMNS, ROWS } from './types';
 import type { Board } from './types';
 
+export interface ColorPair {
+  player1: { name: string; color: string };
+  player2: { name: string; color: string };
+}
+
+export const COLOR_PAIRS: readonly ColorPair[] = [
+  { player1: { name: 'Red', color: '#e53935' }, player2: { name: 'Yellow', color: '#fdd835' } },
+  { player1: { name: 'Blue', color: '#1e88e5' }, player2: { name: 'Orange', color: '#fb8c00' } },
+  { player1: { name: 'Green', color: '#43a047' }, player2: { name: 'Purple', color: '#8e24aa' } },
+];
+
+export function renderColorSelector(
+  root: HTMLElement,
+  pairs: readonly ColorPair[],
+  selectedIndex: number,
+  onChange: (index: number) => void,
+): void {
+  const fieldset = document.createElement('fieldset');
+  fieldset.className = 'color-selector';
+
+  const legend = document.createElement('legend');
+  legend.textContent = 'Colors';
+  fieldset.appendChild(legend);
+
+  pairs.forEach((pair, index) => {
+    const label = document.createElement('label');
+    label.className = 'color-option';
+
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'color-pair';
+    input.value = String(index);
+    input.checked = index === selectedIndex;
+    input.addEventListener('change', () => {
+      if (input.checked) {
+        onChange(index);
+      }
+    });
+
+    label.appendChild(input);
+    label.append(`${pair.player1.name} / ${pair.player2.name}`);
+    fieldset.appendChild(label);
+  });
+
+  root.appendChild(fieldset);
+}
+
+export function setColorSelectorLocked(root: HTMLElement, locked: boolean): void {
+  const fieldset = root.querySelector<HTMLFieldSetElement>('.color-selector');
+
+  if (fieldset) {
+    fieldset.disabled = locked;
+  }
+}
+
+export function applyColorPair(root: HTMLElement, pair: ColorPair): void {
+  root.style.setProperty('--player1-color', pair.player1.color);
+  root.style.setProperty('--player2-color', pair.player2.color);
+}
+
 export function renderTitle(root: HTMLElement): void {
   const title = document.createElement('h1');
   title.className = 'title';

@@ -3,13 +3,17 @@ import { dropToken, isFull } from './board';
 import { COLUMNS, ROWS } from './types';
 import type { Board, GameState, Player } from './types';
 import {
+  applyColorPair,
   clearEndScreen,
+  COLOR_PAIRS,
   onColumnClick,
   renderBoard,
+  renderColorSelector,
   renderEmptyGrid,
   renderEndScreen,
   renderResetButton,
   renderTitle,
+  setColorSelectorLocked,
 } from './ui';
 import { checkWin } from './win';
 
@@ -36,15 +40,34 @@ function createInitialState(): GameState {
 }
 
 let state: GameState = createInitialState();
+let selectedColorIndex = 0;
+let colorsLocked = false;
+
+function currentColorPair() {
+  return COLOR_PAIRS[selectedColorIndex];
+}
+
+function playerName(player: Player): string {
+  const pair = currentColorPair();
+  return player === 'red' ? pair.player1.name : pair.player2.name;
+}
 
 renderTitle(root);
 
+renderColorSelector(root, COLOR_PAIRS, selectedColorIndex, (index) => {
+  selectedColorIndex = index;
+  applyColorPair(root, currentColorPair());
+});
+
 renderResetButton(root, () => {
   state = createInitialState();
+  colorsLocked = false;
+  setColorSelectorLocked(root, false);
   clearEndScreen(root);
   renderBoard(root, state.board);
 });
 
+applyColorPair(root, currentColorPair());
 renderEmptyGrid(root);
 renderBoard(root, state.board);
 
@@ -59,13 +82,18 @@ onColumnClick(root, (column) => {
     return;
   }
 
+  if (!colorsLocked) {
+    colorsLocked = true;
+    setColorSelectorLocked(root, true);
+  }
+
   renderBoard(root, state.board);
 
   const winner = checkWin(state.board);
 
   if (winner) {
     state.winner = winner;
-    renderEndScreen(root, `${winner === 'red' ? 'Red' : 'Yellow'} wins`);
+    renderEndScreen(root, `${playerName(winner)} wins`);
     return;
   }
 
