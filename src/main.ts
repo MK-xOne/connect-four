@@ -8,6 +8,7 @@ import {
   applyColorPair,
   clearEndScreen,
   COLOR_PAIRS,
+  dropHeldPiece,
   onColumnClick,
   renderBoard,
   renderColorSelector,
@@ -51,6 +52,7 @@ let state: GameState = createInitialState();
 let selectedColorIndex = 0;
 let colorsLocked = false;
 let score: Score = createScore();
+let inputLocked = false;
 
 function currentColorPair() {
   return COLOR_PAIRS[selectedColorIndex];
@@ -87,6 +89,7 @@ renderColorSelector(root, COLOR_PAIRS, selectedColorIndex, (index) => {
 
 const rematch = (): void => {
   state = createInitialState();
+  inputLocked = false;
   setRematchVisible(root, false);
   clearEndScreen(root);
   renderBoard(root, state.board);
@@ -97,6 +100,7 @@ renderControls(
   root,
   () => {
     state = createInitialState();
+    inputLocked = false;
     colorsLocked = false;
     score = createScore();
     setColorSelectorLocked(root, false);
@@ -118,43 +122,59 @@ setupHeldPieceTracking(root);
 syncHeldPiece();
 
 onColumnClick(root, (column) => {
-  if (state.winner) {
+  if (state.winner || inputLocked) {
     return;
   }
 
+  const previousColumn = state.board[column];
+  let newBoard: Board;
+
   try {
-    state.board = dropToken(state.board, column, state.currentPlayer);
+    newBoard = dropToken(state.board, column, state.currentPlayer);
   } catch {
     return;
   }
 
-  if (!colorsLocked) {
-    colorsLocked = true;
-    setColorSelectorLocked(root, true);
-  }
+  const droppingPlayer = state.currentPlayer;
+  const newColumn = newBoard[column];
+  const row = newColumn!.findIndex((cell, index) => cell !== previousColumn?.[index]);
 
-  renderBoard(root, state.board);
+  const finishDrop = (): void => {
+    state.board = newBoard;
+    renderBoard(root, state.board);
 
-  const winner = checkWin(state.board);
+    if (!colorsLocked) {
+      colorsLocked = true;
+      setColorSelectorLocked(root, true);
+    }
 
-  if (winner) {
-    state.winner = winner;
-    score = recordWin(score, winner);
-    renderScore(root, score, currentColorPair());
-    renderEndScreen(root, `${playerName(winner)} wins`);
-    setRematchVisible(root, true);
+    const winner = checkWin(state.board);
+
+    if (winner) {
+      state.winner = winner;
+      score = recordWin(score, winner);
+      renderScore(root, score, currentColorPair());
+      renderEndScreen(root, `${playerName(winner)} wins`);
+      setRematchVisible(root, true);
+      syncHeldPiece();
+      inputLocked = false;
+      return;
+    }
+
+    if (isFull(state.board)) {
+      state.winner = 'draw';
+      renderEndScreen(root, 'Draw');
+      setRematchVisible(root, true);
+      syncHeldPiece();
+      inputLocked = false;
+      return;
+    }
+
+    state.currentPlayer = otherPlayer(droppingPlayer);
     syncHeldPiece();
-    return;
-  }
+    inputLocked = false;
+  };
 
-  if (isFull(state.board)) {
-    state.winner = 'draw';
-    renderEndScreen(root, 'Draw');
-    setRematchVisible(root, true);
-    syncHeldPiece();
-    return;
-  }
-
-  state.currentPlayer = otherPlayer(state.currentPlayer);
-  syncHeldPiece();
+  inputLocked = true;
+  dropHeldPiece(root, column, row, finishDrop);
 });

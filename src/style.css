@@ -112,6 +112,10 @@ body {
   transition: none;
 }
 
+.held-piece.falling {
+  transition: left 0.25s ease, top 0.45s cubic-bezier(0.5, 0, 1, 0.5);
+}
+
 @keyframes held-piece-glide {
   0%,
   100% {

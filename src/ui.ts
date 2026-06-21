@@ -218,7 +218,7 @@ export function setupHeldPieceTracking(root: HTMLElement): void {
   }
 
   board.addEventListener('pointermove', (event) => {
-    if (piece.classList.contains('inactive')) {
+    if (piece.classList.contains('inactive') || piece.classList.contains('falling')) {
       return;
     }
 
@@ -237,7 +237,7 @@ export function setupHeldPieceTracking(root: HTMLElement): void {
   });
 
   board.addEventListener('pointerleave', () => {
-    if (piece.classList.contains('inactive')) {
+    if (piece.classList.contains('inactive') || piece.classList.contains('falling')) {
       return;
     }
 
@@ -262,13 +262,74 @@ export function setHeldPieceActive(root: HTMLElement, active: boolean): void {
   }
 
   piece.classList.toggle('inactive', !active);
+  piece.classList.remove('falling');
+
+  // Snap back to the default centered position without animating the jump.
+  piece.style.transition = 'none';
+  piece.style.removeProperty('left');
+  piece.style.removeProperty('top');
+  void piece.offsetHeight;
+  piece.style.removeProperty('transition');
 
   if (active) {
     piece.classList.add('idle');
   } else {
     piece.classList.remove('idle');
-    piece.style.removeProperty('left');
   }
+}
+
+export function dropHeldPiece(
+  root: HTMLElement,
+  column: number,
+  row: number,
+  onLanded: () => void,
+): void {
+  const area = root.querySelector<HTMLElement>('.held-piece-area');
+  const piece = root.querySelector<HTMLElement>('.held-piece');
+  const columnEl = root.querySelector<HTMLElement>(`.column[data-column="${column}"]`);
+  const displayIndex = ROWS - 1 - row;
+  const cellEl = columnEl?.querySelectorAll<HTMLElement>('.cell')[displayIndex];
+
+  if (!area || !piece || !columnEl || !cellEl) {
+    onLanded();
+    return;
+  }
+
+  const areaRect = area.getBoundingClientRect();
+  const columnRect = columnEl.getBoundingClientRect();
+  const cellRect = cellEl.getBoundingClientRect();
+  const centerX = columnRect.left + columnRect.width / 2 - areaRect.left;
+  const targetTop = cellRect.top + cellRect.height / 2 - areaRect.top;
+
+  piece.classList.remove('idle');
+  piece.classList.add('falling');
+  piece.style.left = `${centerX}px`;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    piece.style.transition = 'none';
+    piece.style.top = `${targetTop}px`;
+    void piece.offsetHeight;
+    piece.style.removeProperty('transition');
+    piece.classList.remove('falling');
+    onLanded();
+    return;
+  }
+
+  const handleFallEnd = (event: TransitionEvent): void => {
+    if (event.propertyName !== 'top') {
+      return;
+    }
+
+    piece.removeEventListener('transitionend', handleFallEnd);
+    piece.classList.remove('falling');
+    onLanded();
+  };
+
+  piece.addEventListener('transitionend', handleFallEnd);
+
+  // Force the left jump above to be committed before starting the top transition.
+  void piece.getBoundingClientRect();
+  piece.style.top = `${targetTop}px`;
 }
 
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
