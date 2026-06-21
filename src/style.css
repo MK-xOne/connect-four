@@ -1,0 +1,28 @@
+body {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background: #1b1f3b;
+  font-family: sans-serif;
+}
+
+.board {
+  display: flex;
+  gap: 0.5rem;
+  background: #2541b2;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cell {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #0d1333;
+}
