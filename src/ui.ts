@@ -133,6 +133,10 @@ export function renderEmptyGrid(root: HTMLElement): void {
     board.appendChild(column);
   }
 
+  const frame = document.createElement('div');
+  frame.className = 'board-frame';
+  board.appendChild(frame);
+
   root.appendChild(board);
 }
 
@@ -155,11 +159,17 @@ export function renderBoard(root: HTMLElement, board: Board): void {
 }
 
 export function renderEndScreen(root: HTMLElement, message: string): void {
+  const board = root.querySelector<HTMLElement>('.board');
+
+  if (!board) {
+    return;
+  }
+
   const endScreen = document.createElement('div');
   endScreen.className = 'end-screen';
   endScreen.textContent = message;
 
-  root.appendChild(endScreen);
+  board.appendChild(endScreen);
 }
 
 export function clearEndScreen(root: HTMLElement): void {

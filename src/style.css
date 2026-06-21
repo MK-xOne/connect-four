@@ -61,6 +61,11 @@ body {
 }
 
 .board {
+  /* z-index intentionally omitted: an explicit value here would turn this
+     position: relative into a stacking context, trapping its positioned
+     descendants (the win card, the front frame) below the held/falling piece
+     instead of letting their own z-index values compare directly against it. */
+  position: relative;
   display: flex;
   gap: var(--space-sm);
   width: fit-content;
@@ -85,8 +90,43 @@ body {
   background: var(--color-bg);
 }
 
+/* Front layer of the two-layer board: a solid surface-colored sheet with a
+   transparent circular hole punched at every cell position, so pieces (placed
+   or falling) sit behind it and read as "inside" the grid, occluded at each
+   hole's edge. The hole grid is a repeating mask tile of size
+   (cell + gap) x (cell + gap), offset so the first hole lands exactly on the
+   first cell's center — same pitch/padding tokens the real grid uses, so
+   holes always line up with cells regardless of row/column. */
+.board-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    circle calc(var(--cell-size) / 2) at center,
+    transparent 0,
+    transparent calc(var(--cell-size) / 2),
+    black calc(var(--cell-size) / 2)
+  );
+  mask-image: radial-gradient(
+    circle calc(var(--cell-size) / 2) at center,
+    transparent 0,
+    transparent calc(var(--cell-size) / 2),
+    black calc(var(--cell-size) / 2)
+  );
+  -webkit-mask-size: calc(var(--cell-size) + var(--space-sm)) calc(var(--cell-size) + var(--space-sm));
+  mask-size: calc(var(--cell-size) + var(--space-sm)) calc(var(--cell-size) + var(--space-sm));
+  -webkit-mask-position: calc(var(--space-sm) / 2) calc(var(--space-sm) / 2);
+  mask-position: calc(var(--space-sm) / 2) calc(var(--space-sm) / 2);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
 .held-piece-area {
   position: relative;
+  z-index: 5;
   width: 100%;
   height: calc(var(--cell-size) + var(--space-lg));
   margin-bottom: var(--space-sm);
@@ -141,10 +181,20 @@ body {
 }
 
 .end-screen {
-  margin-top: var(--space-md);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  padding: var(--space-md) var(--space-lg);
+  background: color-mix(in srgb, var(--color-surface-raised) 92%, transparent);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
   color: var(--color-text);
   font-size: var(--font-size-lg);
   text-align: center;
+  white-space: nowrap;
 }
 
 .controls {
