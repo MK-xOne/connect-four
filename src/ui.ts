@@ -40,6 +40,14 @@ export function renderBoard(root: HTMLElement, board: Board): void {
   });
 }
 
+export function renderEndScreen(root: HTMLElement, message: string): void {
+  const endScreen = document.createElement('div');
+  endScreen.className = 'end-screen';
+  endScreen.textContent = message;
+
+  root.appendChild(endScreen);
+}
+
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
   root.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
