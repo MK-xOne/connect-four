@@ -44,6 +44,12 @@ body {
   color: var(--color-text);
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title {
   margin: 0 0 var(--space-md);
   color: var(--color-text);
@@ -55,6 +61,7 @@ body {
   display: flex;
   gap: var(--space-sm);
   width: fit-content;
+  margin: 0 auto;
   background: var(--color-surface);
   padding: var(--space-sm);
   border-radius: var(--radius);
