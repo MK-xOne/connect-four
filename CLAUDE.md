@@ -23,3 +23,5 @@ reconstruct them yourself under any circumstances.
   item you just finished. You do not reorder or add backlog items.
 - If a task turns out bigger than one session, STOP and tell me to split it in the
   backlog rather than expanding the session.
+- Work directly in the main checkout on the current branch. Do not create git
+worktrees or per-item branches unless I ask for one.

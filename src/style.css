@@ -18,6 +18,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  cursor: pointer;
 }
 
 .cell {
@@ -25,4 +26,12 @@ body {
   height: 3rem;
   border-radius: 50%;
   background: #0d1333;
+}
+
+.cell.red {
+  background: #e53935;
+}
+
+.cell.yellow {
+  background: #fdd835;
 }
