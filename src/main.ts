@@ -9,11 +9,12 @@ import {
   onColumnClick,
   renderBoard,
   renderColorSelector,
+  renderControls,
   renderEmptyGrid,
   renderEndScreen,
-  renderResetButton,
   renderTitle,
   setColorSelectorLocked,
+  setRematchVisible,
 } from './ui';
 import { checkWin } from './win';
 
@@ -59,13 +60,25 @@ renderColorSelector(root, COLOR_PAIRS, selectedColorIndex, (index) => {
   applyColorPair(root, currentColorPair());
 });
 
-renderResetButton(root, () => {
+const rematch = (): void => {
   state = createInitialState();
-  colorsLocked = false;
-  setColorSelectorLocked(root, false);
+  setRematchVisible(root, false);
   clearEndScreen(root);
   renderBoard(root, state.board);
-});
+};
+
+renderControls(
+  root,
+  () => {
+    state = createInitialState();
+    colorsLocked = false;
+    setColorSelectorLocked(root, false);
+    setRematchVisible(root, false);
+    clearEndScreen(root);
+    renderBoard(root, state.board);
+  },
+  rematch,
+);
 
 applyColorPair(root, currentColorPair());
 renderEmptyGrid(root);
@@ -94,12 +107,14 @@ onColumnClick(root, (column) => {
   if (winner) {
     state.winner = winner;
     renderEndScreen(root, `${playerName(winner)} wins`);
+    setRematchVisible(root, true);
     return;
   }
 
   if (isFull(state.board)) {
     state.winner = 'draw';
     renderEndScreen(root, 'Draw');
+    setRematchVisible(root, true);
     return;
   }
 

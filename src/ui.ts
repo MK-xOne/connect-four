@@ -131,13 +131,35 @@ export function clearEndScreen(root: HTMLElement): void {
   root.querySelectorAll('.end-screen').forEach((endScreen) => endScreen.remove());
 }
 
-export function renderResetButton(root: HTMLElement, onClick: () => void): void {
-  const button = document.createElement('button');
-  button.className = 'reset-button';
-  button.textContent = 'New game';
-  button.addEventListener('click', onClick);
+export function renderControls(
+  root: HTMLElement,
+  onNewGame: () => void,
+  onRematch: () => void,
+): void {
+  const controls = document.createElement('div');
+  controls.className = 'controls';
 
-  root.appendChild(button);
+  const resetButton = document.createElement('button');
+  resetButton.className = 'reset-button';
+  resetButton.textContent = 'New game';
+  resetButton.addEventListener('click', onNewGame);
+  controls.appendChild(resetButton);
+
+  const rematchButton = document.createElement('button');
+  rematchButton.className = 'rematch-button hidden';
+  rematchButton.textContent = 'Rematch';
+  rematchButton.addEventListener('click', onRematch);
+  controls.appendChild(rematchButton);
+
+  root.appendChild(controls);
+}
+
+export function setRematchVisible(root: HTMLElement, visible: boolean): void {
+  const rematchButton = root.querySelector<HTMLButtonElement>('.rematch-button');
+
+  if (rematchButton) {
+    rematchButton.classList.toggle('hidden', !visible);
+  }
 }
 
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
