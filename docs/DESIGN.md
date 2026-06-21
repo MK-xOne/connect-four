@@ -1,4 +1,5 @@
 # Connect Four — DESIGN
+A title reading "Connect Four" sits above the board.
 
 ## Concept
 Two players take turns dropping tokens into a 7-wide, 6-tall grid. Tokens fall to
@@ -16,6 +17,7 @@ switch player.
 - A full column cannot be played.
 - Win: four of the same color in a line — horizontal, vertical, or either diagonal.
 - Draw: board full with no winner.
+- The two token colors are chosen from a small set of preset pairs before play begins; the selection is disabled during an active game and re-enabled on New game / reset.
 
 ## Definition of done
 Four in a row shows a win screen naming the winner; a full board with no winner
