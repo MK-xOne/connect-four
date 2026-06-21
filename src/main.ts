@@ -9,6 +9,7 @@ import {
   renderEmptyGrid,
   renderEndScreen,
   renderResetButton,
+  renderTitle,
 } from './ui';
 import { checkWin } from './win';
 
@@ -35,6 +36,8 @@ function createInitialState(): GameState {
 }
 
 let state: GameState = createInitialState();
+
+renderTitle(root);
 
 renderResetButton(root, () => {
   state = createInitialState();

@@ -1,6 +1,14 @@
 import { COLUMNS, ROWS } from './types';
 import type { Board } from './types';
 
+export function renderTitle(root: HTMLElement): void {
+  const title = document.createElement('h1');
+  title.className = 'title';
+  title.textContent = 'Connect Four';
+
+  root.appendChild(title);
+}
+
 export function renderEmptyGrid(root: HTMLElement): void {
   const board = document.createElement('div');
   board.className = 'board';

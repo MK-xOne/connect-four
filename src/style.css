@@ -6,6 +6,13 @@ body {
   font-family: sans-serif;
 }
 
+.title {
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+}
+
 .board {
   display: flex;
   gap: 0.5rem;

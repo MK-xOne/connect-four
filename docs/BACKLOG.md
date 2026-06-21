@@ -10,5 +10,5 @@ reorders, adds, or starts an item that isn't marked DOING.
 4. [DONE] checkWin + tests — `win.ts` `checkWin` covering horizontal, vertical, both diagonals, and no-win.
 5. [DONE] Win / draw screens — four-in-a-row names the winner; a full board shows a draw.
 6. [DONE] Reset button — starts a fresh game from any state. This item finishes v1.
-7. [TODO] Game title — a "Connect Four" heading above the board.
+7. [DONE] Game title — a "Connect Four" heading above the board.
 8. [TODO] Color selection — before a game starts, the player picks from a few preset color pairs. The choice is locked once the first token is placed and stays locked until reset/New game.
