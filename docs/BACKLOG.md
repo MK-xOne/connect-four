@@ -15,5 +15,5 @@ reorders, adds, or starts an item that isn't marked DOING.
 9. [DONE] Visual style tokens — define a modern, clean palette, type scale, spacing, and surface treatment; document them as named tokens in docs/STYLE.md and as CSS variables. No UI changes this item.
 10. [DONE] Apply visual style — restyle the title, New game button, color selector, and board frame to the documented tokens. UI chrome only; the game token color pairs are unchanged.
 11. [DONE] Selector swatches — each preset color option shows two discs in that pair's colors. Presentation only; selector behavior/lock unchanged.
-12. [DOING] Rematch — on game end, a Rematch control starts a fresh board with the same colors, without reopening color selection. New game still does the full reset.
-13. [TODO] Score tally — an in-memory win counter per player, shown near the board. A win increments it; Rematch carries it over; New game zeroes it. The counter logic is pure and gets Vitest tests. No persistence — the tally clears on page reload.
+12. [DONE] Rematch — on game end, a Rematch control starts a fresh board with the same colors, without reopening color selection. New game still does the full reset.
+13. [DOING] Score tally — an in-memory win counter per player, shown near the board. A win increments it; Rematch carries it over; New game zeroes it. The counter logic is pure and gets Vitest tests. No persistence — the tally clears on page reload.

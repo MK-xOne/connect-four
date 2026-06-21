@@ -1,5 +1,6 @@
 import { COLUMNS, ROWS } from './types';
 import type { Board } from './types';
+import type { Score } from './score';
 
 export interface ColorPair {
   player1: { name: string; color: string };
@@ -70,6 +71,40 @@ export function setColorSelectorLocked(root: HTMLElement, locked: boolean): void
 export function applyColorPair(root: HTMLElement, pair: ColorPair): void {
   root.style.setProperty('--player1-color', pair.player1.color);
   root.style.setProperty('--player2-color', pair.player2.color);
+}
+
+export function renderScore(root: HTMLElement, score: Score, pair: ColorPair): void {
+  let scoreboard = root.querySelector<HTMLElement>('.scoreboard');
+
+  if (!scoreboard) {
+    scoreboard = document.createElement('div');
+    scoreboard.className = 'scoreboard';
+    root.appendChild(scoreboard);
+  }
+
+  scoreboard.innerHTML = '';
+
+  (
+    [
+      [pair.player1.color, score.red],
+      [pair.player2.color, score.yellow],
+    ] as const
+  ).forEach(([color, count]) => {
+    const entry = document.createElement('span');
+    entry.className = 'score-entry';
+
+    const swatch = document.createElement('span');
+    swatch.className = 'color-swatch';
+    swatch.style.backgroundColor = color;
+
+    const value = document.createElement('span');
+    value.className = 'score-value';
+    value.textContent = String(count);
+
+    entry.appendChild(swatch);
+    entry.appendChild(value);
+    scoreboard.appendChild(entry);
+  });
 }
 
 export function renderTitle(root: HTMLElement): void {

@@ -1,5 +1,7 @@
 import './style.css';
 import { dropToken, isFull } from './board';
+import { createScore, recordWin } from './score';
+import type { Score } from './score';
 import { COLUMNS, ROWS } from './types';
 import type { Board, GameState, Player } from './types';
 import {
@@ -12,6 +14,7 @@ import {
   renderControls,
   renderEmptyGrid,
   renderEndScreen,
+  renderScore,
   renderTitle,
   setColorSelectorLocked,
   setRematchVisible,
@@ -43,6 +46,7 @@ function createInitialState(): GameState {
 let state: GameState = createInitialState();
 let selectedColorIndex = 0;
 let colorsLocked = false;
+let score: Score = createScore();
 
 function currentColorPair() {
   return COLOR_PAIRS[selectedColorIndex];
@@ -58,6 +62,7 @@ renderTitle(root);
 renderColorSelector(root, COLOR_PAIRS, selectedColorIndex, (index) => {
   selectedColorIndex = index;
   applyColorPair(root, currentColorPair());
+  renderScore(root, score, currentColorPair());
 });
 
 const rematch = (): void => {
@@ -72,10 +77,12 @@ renderControls(
   () => {
     state = createInitialState();
     colorsLocked = false;
+    score = createScore();
     setColorSelectorLocked(root, false);
     setRematchVisible(root, false);
     clearEndScreen(root);
     renderBoard(root, state.board);
+    renderScore(root, score, currentColorPair());
   },
   rematch,
 );
@@ -83,6 +90,7 @@ renderControls(
 applyColorPair(root, currentColorPair());
 renderEmptyGrid(root);
 renderBoard(root, state.board);
+renderScore(root, score, currentColorPair());
 
 onColumnClick(root, (column) => {
   if (state.winner) {
@@ -106,6 +114,8 @@ onColumnClick(root, (column) => {
 
   if (winner) {
     state.winner = winner;
+    score = recordWin(score, winner);
+    renderScore(root, score, currentColorPair());
     renderEndScreen(root, `${playerName(winner)} wins`);
     setRematchVisible(root, true);
     return;
