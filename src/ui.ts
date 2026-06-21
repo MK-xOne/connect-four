@@ -48,6 +48,19 @@ export function renderEndScreen(root: HTMLElement, message: string): void {
   root.appendChild(endScreen);
 }
 
+export function clearEndScreen(root: HTMLElement): void {
+  root.querySelectorAll('.end-screen').forEach((endScreen) => endScreen.remove());
+}
+
+export function renderResetButton(root: HTMLElement, onClick: () => void): void {
+  const button = document.createElement('button');
+  button.className = 'reset-button';
+  button.textContent = 'New game';
+  button.addEventListener('click', onClick);
+
+  root.appendChild(button);
+}
+
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
   root.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
