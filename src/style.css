@@ -309,3 +309,10 @@ body {
   font-size: var(--font-size-base);
   color: var(--color-text);
 }
+
+.footer {
+  margin-top: var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}

@@ -342,6 +342,14 @@ export function dropHeldPiece(
   piece.style.top = `${targetTop}px`;
 }
 
+export function renderFooter(root: HTMLElement): void {
+  const footer = document.createElement('footer');
+  footer.className = 'footer';
+  footer.textContent = 'A Game by MK';
+
+  root.appendChild(footer);
+}
+
 export function onColumnClick(root: HTMLElement, handler: (column: number) => void): void {
   root.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;

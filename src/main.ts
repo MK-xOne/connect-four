@@ -15,6 +15,7 @@ import {
   renderControls,
   renderEmptyGrid,
   renderEndScreen,
+  renderFooter,
   renderHeldPiece,
   renderScore,
   renderTitle,
@@ -120,6 +121,7 @@ renderBoard(root, state.board);
 renderScore(root, score, currentColorPair());
 setupHeldPieceTracking(root);
 syncHeldPiece();
+renderFooter(root);
 
 onColumnClick(root, (column) => {
   if (state.winner || inputLocked) {
